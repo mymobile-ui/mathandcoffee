@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'ayt_topics_screen.dart';
+
 class TrackSelectScreen extends StatelessWidget {
   const TrackSelectScreen({super.key});
 
@@ -57,7 +59,7 @@ class TrackSelectScreen extends StatelessWidget {
                 final onTap = track.isAvailable
                     ? () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const _AytTrackScreen(),
+                            builder: (context) => const AytTopicsScreen(),
                           ),
                         )
                     : null;
@@ -142,22 +144,6 @@ class _TrackCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AytTrackScreen extends StatelessWidget {
-  const _AytTrackScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('AYT Akışı'),
-      ),
-      body: const Center(
-        child: Text('AYT akışı burada başlayacak.'),
       ),
     );
   }
