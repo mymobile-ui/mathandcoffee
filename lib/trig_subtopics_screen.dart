@@ -5,6 +5,8 @@ import 'angle_quiz_screen.dart';
 class TrigSubtopicsScreen extends StatelessWidget {
   const TrigSubtopicsScreen({super.key});
 
+  static const routeName = 'trig-subtopics';
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
