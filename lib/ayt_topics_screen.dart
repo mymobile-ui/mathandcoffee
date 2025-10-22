@@ -21,6 +21,7 @@ class AytTopicsScreen extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const TrigSubtopicsScreen(),
+                settings: const RouteSettings(name: TrigSubtopicsScreen.routeName),
               ),
             ),
           ),
