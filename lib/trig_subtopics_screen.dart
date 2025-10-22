@@ -9,21 +9,48 @@ class TrigSubtopicsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trigonometri Alt Konuları'),
       ),
       body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          ListTile(
-            leading: const Icon(Icons.change_history),
-            title: const Text('Açılar'),
-            subtitle: const Text('Açılarla ilgili çalışmaları başlatın.'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AnglesQuizScreen(),
-                settings: const RouteSettings(name: AnglesQuizScreen.routeName),
+          Card(
+            color: colorScheme.secondaryContainer,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: ListTile(
+              leading: Icon(
+                Icons.change_history,
+                color: colorScheme.secondary,
+              ),
+              title: Text(
+                'Açılar',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onSecondaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                'Açılarla ilgili çalışmaları başlatın.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSecondaryContainer.withOpacity(0.8),
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
+                color: colorScheme.onSecondaryContainer,
+              ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AngleQuizScreen(),
+                ),
               ),
             ),
           ),

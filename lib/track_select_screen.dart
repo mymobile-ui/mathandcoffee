@@ -31,10 +31,9 @@ class TrackSelectScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surfaceVariant.withOpacity(0.2),
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: const Text('Programını Seç'),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -100,15 +99,18 @@ class _TrackCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     final backgroundColor = track.isAvailable
-        ? colorScheme.surface
-        : colorScheme.surfaceVariant.withOpacity(0.6);
+        ? colorScheme.primaryContainer
+        : colorScheme.surfaceVariant.withOpacity(0.5);
     final foregroundColor = track.isAvailable
-        ? colorScheme.onSurface
+        ? colorScheme.onPrimaryContainer
+        : colorScheme.onSurfaceVariant;
+    final iconColor = track.isAvailable
+        ? colorScheme.secondary
         : colorScheme.onSurfaceVariant;
 
     return Material(
       color: backgroundColor,
-      elevation: track.isAvailable ? 2 : 0,
+      elevation: track.isAvailable ? 3 : 0,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -121,9 +123,7 @@ class _TrackCard extends StatelessWidget {
               Icon(
                 track.icon,
                 size: 52,
-                color: track.isAvailable
-                    ? colorScheme.primary
-                    : colorScheme.onSurfaceVariant,
+                color: iconColor,
               ),
               const SizedBox(height: 18),
               Text(

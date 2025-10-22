@@ -121,156 +121,27 @@ class _AnglesQuizScreenState extends State<AnglesQuizScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final progressValue = (_currentQuestionIndex + 1) / _questions.length;
-    final isCurrentSelectionCorrect =
-        _selectedOptionIndex == _currentQuestion.correctOptionIndex;
-    final correctAnswerText = _currentQuestion.options[_currentQuestion.correctOptionIndex];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Açılar Quiz'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              color: colorScheme.primaryContainer,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  '180° = π radyan',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 420),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          decoration: BoxDecoration(
+            color: colorScheme.tertiaryContainer,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Text(
+            'Açılar quiz içeriği yakında burada olacak.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: colorScheme.onTertiaryContainer,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(value: progressValue),
-            const SizedBox(height: 24),
-            Text(
-              'Soru ${_currentQuestionIndex + 1} / ${_questions.length}',
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              _currentQuestion.prompt,
-              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 24),
-            ...List.generate(_currentQuestion.options.length, (index) {
-              final option = _currentQuestion.options[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                child: RadioListTile<int>(
-                  title: Text(option),
-                  value: index,
-                  groupValue: _selectedOptionIndex,
-                  onChanged: _handleOptionChanged,
-                ),
-              );
-            }),
-            if (_isAnswerChecked)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  isCurrentSelectionCorrect
-                      ? 'Harika! Doğru cevabı seçtiniz.'
-                      : 'Yanıtınız yanlış. Doğru cevap: $correctAnswerText',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: isCurrentSelectionCorrect
-                        ? colorScheme.primary
-                        : colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _selectedOptionIndex != null && !_isAnswerChecked
-                        ? _checkAnswer
-                        : null,
-                    child: const Text('Cevabı Kontrol Et'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _isAnswerChecked ? _goToNextQuestion : null,
-                    child: Text(
-                      _currentQuestionIndex + 1 == _questions.length ? 'Sonuçlara Git' : 'Sonraki',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ResultScreen extends StatelessWidget {
-  const ResultScreen({
-    super.key,
-    required this.totalQuestions,
-    required this.correctAnswers,
-  });
-
-  static const routeName = 'result';
-
-  final int totalQuestions;
-  final int correctAnswers;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final percentage = (correctAnswers / totalQuestions * 100).toStringAsFixed(0);
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Sonuçlar'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Doğru Cevaplar: $correctAnswers / $totalQuestions',
-              style: theme.textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Başarı Oranı: %$percentage',
-              style: theme.textTheme.titleMedium,
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              child: const Text('Başa dön'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .popUntil((route) => route.settings.name == 'trig-subtopics' || route.isFirst);
-              },
-              child: const Text('Trigonometriye dön'),
-            ),
-          ],
+          ),
         ),
       ),
     );
