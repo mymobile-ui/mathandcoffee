@@ -5,6 +5,8 @@ import 'angle_quiz_screen.dart';
 class TrigSubtopicsScreen extends StatelessWidget {
   const TrigSubtopicsScreen({super.key});
 
+  static const routeName = 'trig-subtopics';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +22,8 @@ class TrigSubtopicsScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const AngleQuizScreen(),
+                builder: (context) => const AnglesQuizScreen(),
+                settings: const RouteSettings(name: AnglesQuizScreen.routeName),
               ),
             ),
           ),
