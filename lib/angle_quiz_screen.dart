@@ -12,17 +12,17 @@ class Question {
   final int correctOptionIndex;
 }
 
-class AnglesQuizScreen extends StatefulWidget {
-  const AnglesQuizScreen({super.key});
+class AngleQuizScreen extends StatefulWidget {
+  const AngleQuizScreen({super.key});
 
-  static const routeName = 'angles-quiz';
+  static const routeName = 'angle-quiz';
 
   @override
-  State<AnglesQuizScreen> createState() => _AnglesQuizScreenState();
+  State<AngleQuizScreen> createState() => _AngleQuizScreenState();
 }
 
-class _AnglesQuizScreenState extends State<AnglesQuizScreen> {
-  final List<Question> _questions = const [
+class _AngleQuizScreenState extends State<AngleQuizScreen> {
+  final List<Question> _questions = [
     Question(
       prompt: '30° kaç radyandır?',
       options: ['π/3', 'π/6', 'π/4', 'π/2'],
@@ -121,25 +121,234 @@ class _AnglesQuizScreenState extends State<AnglesQuizScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isLastQuestion = _currentQuestionIndex == _questions.length - 1;
+    final hasSelection = _selectedOptionIndex != null;
+    final isCorrectSelection =
+        _selectedOptionIndex == _currentQuestion.correctOptionIndex;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Açılar Quiz'),
       ),
       body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 420),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          decoration: BoxDecoration(
-            color: colorScheme.tertiaryContainer,
-            borderRadius: BorderRadius.circular(24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Soru ${_currentQuestionIndex + 1}/${_questions.length}',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _currentQuestion.prompt,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...List.generate(
+                      _currentQuestion.options.length,
+                      (index) {
+                        final option = _currentQuestion.options[index];
+                        final isCorrectOption =
+                            index == _currentQuestion.correctOptionIndex;
+                        final isSelected =
+                            _selectedOptionIndex == index && _isAnswerChecked;
+
+                        Color? tileColor;
+                        if (_isAnswerChecked && isCorrectOption) {
+                          tileColor = colorScheme.primaryContainer;
+                        } else if (_isAnswerChecked && isSelected) {
+                          tileColor = colorScheme.errorContainer;
+                        }
+
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == _currentQuestion.options.length - 1
+                                ? 0
+                                : 12,
+                          ),
+                          child: RadioListTile<int>(
+                            value: index,
+                            groupValue: _selectedOptionIndex,
+                            onChanged:
+                                _isAnswerChecked ? null : _handleOptionChanged,
+                            title: Text(
+                              option,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                            tileColor: tileColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            activeColor: colorScheme.primary,
+                          ),
+                        );
+                      },
+                    ),
+                    if (_isAnswerChecked) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        isCorrectSelection
+                            ? 'Harika! Doğru cevap.'
+                            : 'Doğru cevap: ${_currentQuestion.options[_currentQuestion.correctOptionIndex]}',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isCorrectSelection
+                              ? colorScheme.primary
+                              : colorScheme.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: !_isAnswerChecked && hasSelection
+                                ? _checkAnswer
+                                : null,
+                            child: const Text('Cevabı Kontrol Et'),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: _isAnswerChecked ? _goToNextQuestion : null,
+                            child: Text(
+                              isLastQuestion ? 'Sonuçlara Git' : 'Sonraki Soru',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Doğru cevap sayısı: $_correctAnswers',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          child: Text(
-            'Açılar quiz içeriği yakında burada olacak.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: colorScheme.onTertiaryContainer,
-              fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class ResultScreen extends StatelessWidget {
+  const ResultScreen({
+    super.key,
+    required this.totalQuestions,
+    required this.correctAnswers,
+  });
+
+  static const routeName = 'angle-quiz-result';
+
+  final int totalQuestions;
+  final int correctAnswers;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final score = totalQuestions == 0
+        ? 0
+        : (correctAnswers / totalQuestions * 100).round();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quiz Sonuçları'),
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Card(
+            margin: const EdgeInsets.all(16),
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.emoji_events_outlined,
+                    size: 72,
+                    color: colorScheme.secondary,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Tebrikler!',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Doğru cevap sayısı: $correctAnswers / $totalQuestions',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '%$score başarı',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  FilledButton(
+                    onPressed: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const AngleQuizScreen(),
+                        settings: const RouteSettings(
+                          name: AngleQuizScreen.routeName,
+                        ),
+                      ),
+                    ),
+                    child: const Text("Quiz'i Yeniden Dene"),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Trigonometri konularına dön'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
